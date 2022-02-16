@@ -5,7 +5,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-// app.use("/", apiRoutes);
 
 const { Schema } = mongoose;
 const costsSchema = new Schema({
@@ -27,7 +26,6 @@ app.get("/", (req, res) => {
   cost.save().then((result) => {
     res.send(result);
   });
-  
 });
 
 app.listen(8000, () => {
