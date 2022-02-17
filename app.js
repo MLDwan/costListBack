@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 
 app.post("/createCosts", (req, res) => {
   const cost = new Cost(req.body);
-  cost.save().then((result) => {
+  cost.save().then(() => {
     Cost.find().then((result) => {
       res.send({data: result});
     });
@@ -43,6 +43,13 @@ app.delete("/deleteCosts", (req, res) => {
   });
 });
 
+app.patch("/changeCost", (req, res) => {
+  Cost.updateOne({ _id: req.query._id }, req.body).then(() => {
+    Cost.find().then((result) => {
+      res.send({data: result});
+    });
+  });
+});
 
 app.listen(8000, () => {
   console.log("listener: 8000");
