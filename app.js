@@ -34,7 +34,8 @@ app.post("/createCosts", (req, res) => {
 });
 
 app.delete("/deleteCosts", (req, res) => {
-  Cost.deleteOne({ _id: req.query._id }).then(() => {
+  const idQuery = req.query._id;
+  Cost.deleteOne({ _id: idQuery}).then(() => {
     Cost.find().then((result) => {
       res.send({data: result});
     });
@@ -42,7 +43,8 @@ app.delete("/deleteCosts", (req, res) => {
 });
 
 app.patch("/changeCost", (req, res) => {
-  Cost.updateOne({_id: req.query._id}, req.body).then(() => {
+  const idBody = req.body._id;
+  Cost.updateOne({_id: idBody}, req.body).then(() => {
     Cost.find().then((result) => {
       res.send({data: result});
     });
