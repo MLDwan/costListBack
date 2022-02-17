@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const res = require("express/lib/response");
 const app = express();
 
 app.use(cors());
@@ -27,7 +26,7 @@ app.get("/", (req, res) => {
 
 app.post("/createCosts", (req, res) => {
   const cost = new Cost(req.body);
-  cost.save().then((result) => {
+  cost.save().then(() => {
     Cost.find().then((result) => {
       res.send({data: result});
     });
@@ -42,7 +41,6 @@ app.delete("/deleteCosts", (req, res) => {
   });
 });
 
-
 app.listen(8000, () => {
-  console.log("listener: 8000");
+  console.log("listener:: 8000");
 });
