@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const res = require("express/lib/response");
 const app = express();
 
 app.use(cors());
@@ -10,7 +9,7 @@ app.use(express.json());
 const { Schema } = mongoose;
 const costsSchema = new Schema({
   place: String,
-  date: Date,
+  date: String,
   spent: Number,
 });
 
@@ -22,8 +21,8 @@ mongoose.connect(uri, { useUnifiedTopology: true });
 
 app.get("/", (req, res) => {
   Cost.find().then((result) => {
-    res.send({body: result})
-  })
+    res.send({body: result});
+  });
 });
 
 app.post("/createCosts", (req, res) => {
@@ -37,5 +36,5 @@ app.post("/createCosts", (req, res) => {
 
 
 app.listen(8000, () => {
-  console.log("kdkdkdk");
+  console.log("listener:: 8000");
 });
