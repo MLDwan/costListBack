@@ -15,8 +15,7 @@ const costsSchema = new Schema({
 
 const Cost = mongoose.model("costs", costsSchema);
 
-const uri =
-  "mongodb+srv://user:user@cluster0.x2u0b.mongodb.net/costs?retryWrites=true&w=majority";
+const uri = "mongodb+srv://user:user@cluster0.x2u0b.mongodb.net/costs?retryWrites=true&w=majority";
 mongoose.connect(uri, { useUnifiedTopology: true });
 
 app.get("/", (req, res) => {
@@ -27,13 +26,24 @@ app.get("/", (req, res) => {
 
 app.post("/createCosts", (req, res) => {
   const cost = new Cost(req.body);
-  cost.save().then((result) => {
+  cost.save().then(() => {
     Cost.find().then((result) => {
       res.send({data: result});
     });
   });
 });
 
+<<<<<<< HEAD
+=======
+app.delete("/deleteCosts", (req, res) => {
+  Cost.deleteOne({ _id: req.query._id }).then(() => {
+    Cost.find().then((result) => {
+      res.send({data: result});
+    });
+  });
+});
+
+>>>>>>> 7ab85b291985e8a3b8aa3e5aacf9a6684190a20e
 app.listen(8000, () => {
   console.log("listener:: 8000");
 });
