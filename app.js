@@ -35,7 +35,15 @@ app.post("/createCosts", (req, res) => {
   });
 });
 
+app.delete("/deleteCosts", (req, res) => {
+  Cost.deleteOne({ _id: req.query._id }).then(() => {
+    Cost.find().then((result) => {
+      res.send({data: result});
+    });
+  });
+});
+
 
 app.listen(8000, () => {
-  console.log("kdkdkdk");
+  console.log("listener: 8000");
 });
