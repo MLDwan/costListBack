@@ -19,32 +19,41 @@ const uri = "mongodb+srv://user:user@cluster0.x2u0b.mongodb.net/costs?retryWrite
 mongoose.connect(uri, { useUnifiedTopology: true });
 
 app.get("/allCosts", (req, res) => {
-  Cost.find().then((result) => {
-    res.send({body: result});
-  });
-});
-
-app.post("/createCosts", (req, res) => {
-  const cost = new Cost(req.body);
-  cost.save().then(() => {
+  try {
     Cost.find().then((result) => {
       res.send({data: result});
     });
-  });
+  } catch (error) {
+    res.status(422).send('Error! Params not correct');
+  };
+});
+
+app.post("/createCosts", (req, res) => {
+  let {place, spent} = req.body;
+  if((place !== '' && spent !== '') || typeof(spent) === 'number') {
+    const cost = new Cost(req.body);
+    cost.save().then(() => {
+      Cost.find().then((result) => {
+        res.send({data: result});
+      });
+    });
+  } else res.status(422).send('Error! Params not correct');
 });
 
 app.delete("/deleteCosts", (req, res) => {
   const id = req.query._id;
-  Cost.deleteOne({ _id: id}).then(() => {
-    Cost.find().then((result) => {
-      res.send({data: result});
+  if(id) {
+    Cost.deleteOne({ _id: id}).then(() => {
+      Cost.find().then((result) => {
+        res.send({data: result});
+      });
     });
-  });
+  } else res.status(422).send('Error! Params not correct');
 });
 
 app.patch("/changeCost", (req, res) => {
   const {body} = req;
-  const id = body.id
+  const id = body._id;
 
   Cost.updateOne({_id: id}, body).then(() => {
     Cost.find().then((result) => {
