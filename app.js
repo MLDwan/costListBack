@@ -29,15 +29,16 @@ app.get("/allCosts", (req, res) => {
 });
 
 app.post("/createCosts", (req, res) => {
-  let {place, spent} = req.body;
-  if((place !== '' && spent !== '') || typeof(spent) === 'number') {
     const cost = new Cost(req.body);
-    cost.save().then(() => {
-      Cost.find().then((result) => {
-        res.send({data: result});
+    try {
+      cost.save().then(() => {
+        Cost.find().then((result) => {
+          res.send({data: result});
+        });
       });
-    });
-  } else res.status(422).send('Error! Params not correct');
+    } catch (error) {
+      res.status(422).send('Error! Params not correct');
+    }
 });
 
 app.delete("/deleteCosts", (req, res) => {
@@ -53,13 +54,14 @@ app.delete("/deleteCosts", (req, res) => {
 
 app.patch("/changeCost", (req, res) => {
   const {body} = req;
-  const id = body._id;
-
-  Cost.updateOne({_id: id}, body).then(() => {
-    Cost.find().then((result) => {
-      res.send({data: result});
+  const id = req.body._id;
+  if(body && id) {
+    Cost.updateOne({_id: id}, body).then(() => {
+      Cost.find().then((result) => {
+        res.send( {data: result} );
+      });
     });
-  });
+  } else res.status(422).send('Error! Params not correct');
 });
 
 app.listen(8000, () => {
