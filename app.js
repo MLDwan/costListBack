@@ -31,7 +31,7 @@ app.get("/allCosts", (req, res) => {
 
 app.post("/createCosts", (req, res) => {
   let cost = new Cost(req.body);
-  if (cost.date == undefined) {
+  if (!cost.date) {
     cost = new Cost({
       place: String(cost.place),
       date: new Date().toLocaleDateString(),
@@ -47,7 +47,7 @@ app.post("/createCosts", (req, res) => {
     });
   } catch (error) {
     res.status(422).send("Error! Params not correct");
-  }
+  };
 });
 
 app.delete("/deleteCosts", (req, res) => {
