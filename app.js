@@ -30,7 +30,15 @@ app.get("/allCosts", (req, res) => {
 });
 
 app.post("/createCosts", (req, res) => {
-  const cost = new Cost(req.body);
+  let cost = new Cost(req.body);
+  if (cost.date == undefined) {
+    cost = new Cost({
+      place: String(cost.place),
+      date: new Date().toLocaleDateString(),
+      spent: Number(cost.spent),
+    });
+  };
+
   try {
     cost.save().then(() => {
       Cost.find().then((result) => {
