@@ -10,35 +10,67 @@ const { Schema } = mongoose;
 const costsSchema = new Schema({
   place: String,
   date: String,
-  spent: Number
+  spent: Number,
 });
 
 const Cost = mongoose.model("costs", costsSchema);
 
-const uri = "mongodb+srv://user:user@cluster0.x2u0b.mongodb.net/costs?retryWrites=true&w=majority";
+const uri =
+  "mongodb+srv://user:user@cluster0.x2u0b.mongodb.net/costs?retryWrites=true&w=majority";
 mongoose.connect(uri, { useUnifiedTopology: true });
 
-app.get("/", (req, res) => {
-  Cost.find().then((result) => {
-    res.send({body: result});
-  });
+app.get("/allCosts", (req, res) => {
+  try {
+    Cost.find().then((result) => {
+      res.send({ data: result });
+    });
+  } catch (error) {
+    res.status(422).send("Error! Params not correct");
+  }
 });
 
 app.post("/createCosts", (req, res) => {
-  const cost = new Cost(req.body);
-  cost.save().then(() => {
-    Cost.find().then((result) => {
-      res.send({data: result});
+  let cost = new Cost(req.body);
+  if (!cost.date) {
+    cost = new Cost({
+      place: String(cost.place),
+      date: new Date().toLocaleDateString(),
+      spent: Number(cost.spent),
     });
-  });
+  };
+
+  try {
+    cost.save().then(() => {
+      Cost.find().then((result) => {
+        res.send({ data: result });
+      });
+    });
+  } catch (error) {
+    res.status(422).send("Error! Params not correct");
+  };
 });
 
 app.delete("/deleteCosts", (req, res) => {
-  Cost.deleteOne({ _id: req.query._id }).then(() => {
-    Cost.find().then((result) => {
-      res.send({data: result});
+  const id = req.query._id;
+  if (id) {
+    Cost.deleteOne({ _id: id }).then(() => {
+      Cost.find().then((result) => {
+        res.send({ data: result });
+      });
     });
-  });
+  } else res.status(422).send("Error! Params not correct");
+});
+
+app.patch("/changeCost", (req, res) => {
+  const { body } = req;
+  const id = req.body._id;
+  if (body && id) {
+    Cost.updateOne({ _id: id }, body).then(() => {
+      Cost.find().then((result) => {
+        res.send({ data: result });
+      });
+    });
+  } else res.status(422).send("Error! Params not correct");
 });
 
 app.listen(8000, () => {
